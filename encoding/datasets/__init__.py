@@ -9,6 +9,7 @@ from .pcontext import ContextSegmentation
 from .cityscapes import CitySegmentation
 from .imagenet import ImageNetDataset
 from .minc import MINCDataset
+from .cityscapesclassification import CityscapesClassificationDataset
 
 from ..utils import EncodingDeprecationWarning
 
@@ -22,6 +23,7 @@ datasets = {
     'imagenet': ImageNetDataset,
     'minc': MINCDataset,
     'cifar10': CIFAR10,
+    'cityscapesclassification': CityscapesClassificationDataset,
 }
 
 acronyms = {
