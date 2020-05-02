@@ -138,9 +138,12 @@ def main_worker(gpu, ngpus_per_node, args):
     transform_train, transform_val = encoding.transforms.get_transform(
             args.dataset, args.base_size, args.crop_size, args.rand_aug)
     trainset = encoding.datasets.get_dataset(args.dataset, root=os.path.expanduser('~/.encoding/data'),
-                                             transform=transform_train, train=True, download=True)
+                                             transform=transform_train, split='train')
+    train_extraset = encoding.datasets.get_dataset(args.dataset, root=os.path.expanduser('~/.encoding/data'),
+                                                   transform=transform_train, split='train_extra')
+    trainset = torch.utils.data.ConcatDataset([trainset, train_extraset])
     valset = encoding.datasets.get_dataset(args.dataset, root=os.path.expanduser('~/.encoding/data'),
-                                           transform=transform_val, train=False, download=True)
+                                           transform=transform_val, split='val')
 
     train_sampler = torch.utils.data.distributed.DistributedSampler(trainset)
     train_loader = torch.utils.data.DataLoader(
