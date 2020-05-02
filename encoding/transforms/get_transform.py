@@ -77,6 +77,39 @@ def get_transform(dataset, base_size=None, crop_size=224, rand_aug=False, etrans
             transforms.Normalize((0.4914, 0.4822, 0.4465), 
                     (0.2023, 0.1994, 0.2010)),
         ])
+    elif dataset == 'cityscapesclassification':
+        train_transforms = []
+        val_transforms = []
+        if rand_aug:
+            from .autoaug import RandAugment
+            train_transforms.append(RandAugment(2, 12))
+        if etrans:
+            train_transforms.extend([
+                ERandomCrop(crop_size),
+            ])
+            val_transforms.extend([
+                ECenterCrop(crop_size),
+            ])
+            
+        else:
+            train_transforms.extend([
+                RandomResizedCrop(crop_size),
+            ])
+            val_transforms.extend([
+                Resize(base_size),
+                CenterCrop(crop_size),
+            ])
+        train_transforms.extend([
+            RandomHorizontalFlip(),
+            ToTensor(),
+            normalize,
+        ])
+        val_transforms.extend([
+            ToTensor(),
+            normalize,
+        ])
+        transform_train = Compose(train_transforms)
+        transform_val = Compose(val_transforms)
     return transform_train, transform_val
 
 _imagenet_pca = {

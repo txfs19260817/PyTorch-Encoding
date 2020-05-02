@@ -32,4 +32,4 @@ python train_dist.py --dataset imagenet --model resnet50 --lr-scheduler cos --ep
 python train_dist.py --dataset imagenet --model resnest50 --lr-scheduler cos --epochs 270 --checkname resnest50_rt_bots --lr 0.1 --batch-size 256 --label-smoothing 0.1 --mixup 0.2  --last-gamma --no-bn-wd --warmup-epochs 5 --dropblock-prob 0.1 --rectify
 
 # ==========multi-label========== #
-python train_dist.py --dataset cityscapesclassification --model resnet50 --crop-size 320 --lr-scheduler cos --epochs 120 --checkname resnet50 --lr 0.1 --batch-size 256 --last-gamma  --rectify --no-bn-wd --warmup-epochs 5
+python train_dist_multilabel.py --dataset cityscapesclassification --model resnet50 --crop-size 320 --lr-scheduler cos --epochs 120 --checkname resnet50 --lr 0.1 --batch-size 256 --last-gamma  --rectify --no-bn-wd --warmup-epochs 5 --pretrained
