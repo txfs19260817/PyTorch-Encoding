@@ -80,4 +80,4 @@ void CONV_RECTIFY_CPU(
   at::IntArrayRef stride,
   at::IntArrayRef padding,
   at::IntArrayRef dilation,
-  bool avg_mode);
+  bool average);//avg_mode

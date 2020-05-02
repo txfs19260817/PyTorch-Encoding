@@ -12,7 +12,7 @@ import threading
 import numpy as np
 import torch
 
-__all__ = ['accuracy', 'get_pixacc_miou',
+__all__ = ['accuracy', 'get_pixacc_miou', 'accuracy_multilabel',
            'SegmentationMetric', 'batch_intersection_union', 'batch_pix_accuracy',
            'pixel_accuracy', 'intersection_and_union']
 
@@ -31,6 +31,15 @@ def accuracy(output, target, topk=(1,)):
             correct_k = correct[:k].view(-1).float().sum(0, keepdim=True)
             res.append(correct_k.mul_(100.0 / batch_size))
         return res
+
+
+def accuracy_multilabel(output, target):
+    assert output.shape == target.shape, \
+        "shapes output: {}, and target:{} are not aligned. ".\
+            format(output.shape, target.shape)
+    
+    return torch.round(output).eq(target).sum().numpy()/target.numel()
+
 
 def get_pixacc_miou(total_correct, total_label, total_inter, total_union):
     pixAcc = 1.0 * total_correct / (np.spacing(1) + total_label)
