@@ -176,6 +176,7 @@ def main_worker(gpu, ngpus_per_node, args):
         model_kwargs['rectify_avg'] = args.rectify_avg
     
     model = encoding.models.get_model(args.model, **model_kwargs)
+    model.fc = nn.Linear(2048,19,bias=True)
 
     if args.dropblock_prob > 0.0:
         from functools import partial
@@ -262,7 +263,7 @@ def main_worker(gpu, ngpus_per_node, args):
 
             if not args.mixup:
                 acc1 = accuracy_multilabel(output, target)
-                top1.update(acc1[0], data.size(0))
+                top1.update(acc1, data.size(0))
 
             losses.update(loss.item(), data.size(0))
             if batch_idx % 100 == 0 and args.gpu == 0:
@@ -283,7 +284,7 @@ def main_worker(gpu, ngpus_per_node, args):
             with torch.no_grad():
                 output = model(data)
                 acc1 = accuracy_multilabel(output, target)
-                top1.update(acc1[0], data.size(0))
+                top1.update(acc1, data.size(0))
 
         # sum all
         sum1, cnt1 = torch_dist_sum(args.gpu, top1.sum, top1.count)

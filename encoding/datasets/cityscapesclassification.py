@@ -36,6 +36,8 @@ class CityscapesClassificationDataset(torch.utils.data.Dataset):
 
         super(CityscapesClassificationDataset, self).__init__()
 
+        self.nclass = 19
+
         # split
         assert split in ('train', 'train_extra', 'val')
         self.split = split
@@ -75,7 +77,7 @@ class CityscapesClassificationDataset(torch.utils.data.Dataset):
             image = self.transform(image)
 
         label = list(map(int, label.split(',')))
-        label = torch.LongTensor(label)
+        label = torch.FloatTensor(label)
 
         return image, label
 

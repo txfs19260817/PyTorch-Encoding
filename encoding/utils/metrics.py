@@ -35,10 +35,10 @@ def accuracy(output, target, topk=(1,)):
 
 def accuracy_multilabel(output, target):
     assert output.shape == target.shape, \
-        "shapes output: {}, and target:{} are not aligned. ".\
+        "shapes output: {}, and target: {} are not aligned. ".\
             format(output.shape, target.shape)
-    
-    return torch.round(output).eq(target).sum().numpy()/target.numel()
+    output.sigmoid_()
+    return torch.round(output).eq(target).sum().cpu().numpy()/target.numel()
 
 
 def get_pixacc_miou(total_correct, total_label, total_inter, total_union):
