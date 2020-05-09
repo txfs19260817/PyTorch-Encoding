@@ -96,10 +96,13 @@ class Options():
         parser.add_argument('--dist-backend', default='nccl', type=str,
                             help='distributed backend')
         # evaluation option
-        parser.add_argument('--eval', action='store_true', default= False,
+        parser.add_argument('--eval', action='store_true', default=False,
                             help='evaluating')
         parser.add_argument('--export', type=str, default=None,
                             help='put the path to resuming file if needed')
+        # training option
+        parser.add_argument('--trainval', action='store_true', default=False,
+                            help='training with validation set')
         self.parser = parser
 
     def parse(self):
@@ -141,9 +144,12 @@ def main_worker(gpu, ngpus_per_node, args):
                                              transform=transform_train, split='train')
     train_extraset = encoding.datasets.get_dataset(args.dataset, root=os.path.expanduser('~/.encoding/data'),
                                                    transform=transform_train, split='train_extra')
-    trainset = torch.utils.data.ConcatDataset([trainset, train_extraset])
     valset = encoding.datasets.get_dataset(args.dataset, root=os.path.expanduser('~/.encoding/data'),
                                            transform=transform_val, split='val')
+    if args.trainval:
+        trainset = torch.utils.data.ConcatDataset([trainset, train_extraset, valset])
+    else:
+        trainset = torch.utils.data.ConcatDataset([trainset, train_extraset])
 
     train_sampler = torch.utils.data.distributed.DistributedSampler(trainset)
     train_loader = torch.utils.data.DataLoader(
